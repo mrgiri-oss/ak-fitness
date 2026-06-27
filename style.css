@@ -1,0 +1,2329 @@
+/* ==========================================================================
+   1. CORE COMPONENT VARIABLES & GLOBAL STYLES
+   ========================================================================== */
+:root {
+    --primary-yellow: #e2c035;
+    --dark-bg: #0b0b0b;
+    --card-bg: #141414;
+    --text-white: #ffffff;
+    --text-gray: #a5a5a5;
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-white);
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ==========================================================================
+   2. STICKY NAVBAR & LOGO REFINEMENTS
+   ========================================================================== */
+header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 8%;
+    z-index: 1050;
+    background: transparent;
+    transition: var(--transition-smooth);
+}
+
+/* Glassmorphic background effect triggered seamlessly on scroll via JS */
+header.scrolled {
+    background: rgba(11, 11, 11, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+}
+
+.logo-container {
+    text-decoration: none !important; /* Prevents underlines */
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.logo-main {
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--text-white, #ffffff); /* Keeps the text white */
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.logo-sub {
+    font-size: 10px;
+    color: var(--primary-yellow, #e2c035); /* Keeps the yellow sub-text */
+    letter-spacing: 2px;
+    margin-top: 4px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 30px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-white);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover, 
+nav ul li a.active {
+    color: var(--primary-yellow);
+}
+
+/* Sliding underline interaction matching the live demo */
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-yellow);
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover::after, 
+nav ul li a.active::after {
+    width: 100%;
+}
+
+/* ==========================================================================
+   3. HERO SECTION (Synchronized Content Slider - No Zoom)
+   ========================================================================== */
+.hero {
+    position: relative;
+    height: 100vh;
+    min-height: 750px;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.hero-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Individual Slide Master Layer */
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding: 0 8%;
+    
+    /* Hide slide by default */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 1;
+    
+    /* ONLY animating opacity now for a flat, clean crossfade */
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+}
+
+/* Active Slide State */
+.hero-slide.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 2;
+    /* Removed transform: scale(1.05) to keep the image completely static */
+}
+
+/* Text Content Wrapper */
+.hero-content {
+    max-width: 550px;
+    position: relative;
+    z-index: 5;
+    
+    /* Text entrance slide-up animation remains intact */
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Trigger text slide-up animation as soon as the slide opens */
+.hero-slide.active .hero-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.3s;
+}
+
+/* Text Element Styling Rules */
+.hero-content h1 {
+    color: #ffffff;
+    font-size: 64px;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+}
+
+.hero-content p {
+    color: var(--text-gray);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+/* Button Formatting Engine */
+.btn-yellow {
+    display: inline-block;
+    background-color: var(--primary-yellow);
+    color: #000000;
+    text-decoration: none;
+    padding: 18px 35px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    border: 2px solid var(--primary-yellow);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-yellow:hover {
+    background-color: transparent;
+    color: var(--primary-yellow);
+    border-color: var(--primary-yellow);
+}
+
+/* ==========================================================================
+   HERO INFO STRIP CONTROLS (Positioning & Visibility Fix)
+   ========================================================================== */
+.info-strip {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 55%;
+    background-color: var(--primary-yellow);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 30px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+    
+    /* CRITICAL FIX: Forces this element to sit cleanly above all active slider layers */
+    z-index: 100; 
+}
+
+.info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 0 10px;
+}
+
+/* Icons within the yellow accent panel */
+.info-box i {
+    font-size: 20px;
+    margin-top: 3px;
+    color: #000000; /* Crisp black for visual pop */
+}
+
+/* Headings ("Open Hours", "Our Location", etc.) */
+.info-box h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #000000; /* Solid high-contrast black text */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Descriptions (The actual times, addresses, and numbers) */
+.info-box p {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #111111; /* Clear dark charcoal for solid readability over the yellow */
+    margin: 0;
+}
+
+/* Responsive Handling: Keeps the bar safe on tablets and mid-size setups */
+@media (max-width: 992px) {
+    .info-strip {
+        width: 100%;
+        position: relative;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* ==========================================================================
+   4. WELCOME SECTION (Updated with Infinite Ripple Effect)
+   ========================================================================== */
+.welcome {
+    display: flex;
+    min-height: 600px;
+}
+
+.welcome-video {
+    flex: 1;
+    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1000') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Core Play Button Setup with Position Relative for Animation Anchoring */
+.play-btn {
+    position: relative; /* Crucial anchor point for the ripples */
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-yellow);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #000;
+    cursor: pointer;
+    z-index: 2; /* Sits cleanly on top of expanding rings */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Create the dual expanding ripples using pseudo-elements */
+.play-btn::before,
+.play-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background-color: var(--primary-yellow);
+    opacity: 0.6;
+    z-index: -1; /* Pushes animations behind the button surface */
+}
+
+/* Stagger the animations to create consecutive, organic waves */
+.play-btn::before {
+    animation: continuousRipple 2.4s linear infinite;
+}
+
+.play-btn::after {
+    animation: continuousRipple 2.4s linear infinite;
+    animation-delay: 1.2s; /* Creates the perfect dual-ring delay */
+}
+
+/* Dynamic Hover Properties */
+.play-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(226, 192, 53, 0.6);
+}
+
+/* Keyframe configuration: 
+   Starts inside the button size, blooms outwards, and slowly dissolves.
+*/
+@keyframes continuousRipple {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(2.2); /* Controls how wide out the ripples travel */
+        opacity: 0;
+    }
+}
+
+.welcome-text {
+    flex: 1;
+    padding: 8% 6%;
+    background-color: #111111;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.welcome-text h2 {
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+.welcome-text h2 span {
+    color: var(--primary-yellow);
+}
+
+.welcome-text p {
+    color: var(--text-gray);
+    line-height: 1.8;
+    font-size: 15px;
+}
+/* ==========================================================================
+   5. INTERACTIVE SCROLL REVEALS
+   ========================================================================== */
+.section-header {
+    text-align: center;
+    padding: 90px 0 30px;
+}
+
+.section-header span {
+    color: var(--primary-yellow);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.section-header h2 {
+    font-size: 40px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.section-desc {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+    color: var(--text-gray);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0 20px;
+}
+
+/* Interactive reveal anchors */
+.process-card, 
+.program-item,
+.stat-box {
+    opacity: 0;
+    transform: translateY(35px);
+    transition: opacity 0.8s cubic-bezier(0.215, 0.610, 0.355, 1), 
+                transform 0.8s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
+.element-visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* In-line Stagger Delays */
+.process-container > .process-card:nth-child(2) { transition-delay: 0.1s; }
+.process-container > .process-card:nth-child(3) { transition-delay: 0.2s; }
+.process-container > .process-card:nth-child(4) { transition-delay: 0.3s; }
+
+.stats-banner > .stat-box:nth-child(2) { transition-delay: 0.1s; }
+.stats-banner > .stat-box:nth-child(3) { transition-delay: 0.2s; }
+.stats-banner > .stat-box:nth-child(4) { transition-delay: 0.3s; }
+
+/* ==========================================================================
+   6. PROCESS SECTION LAYOUT (Cursor Hover Diamond Morph)
+   ========================================================================== */
+.process-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    padding: 0 8% 90px;
+}
+
+.process-card {
+    text-align: center;
+    position: relative;
+    padding: 10px;
+    cursor: pointer; /* Gives visual feedback that the section is interactive */
+}
+
+/* 1. Default Resting State: Flat, unrotated Square Box */
+.icon-box {
+    width: 120px;
+    height: 120px;
+    background-color: var(--primary-yellow);
+    color: #000000;
+    margin: 0 auto 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
+    
+    /* Sets the baseline position */
+    transform: rotate(0deg) scale(1);
+    /* Handles the smooth deceleration animation when entering and exiting */
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s ease;
+}
+
+/* Keeps the internal text character upright in resting state */
+.icon-box span,
+.icon-box i {
+    display: block;
+    transform: rotate(0deg);
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 2. Interactive Cursor State: Morphs into an enlarged Diamond on hover */
+.process-card:hover .icon-box {
+    transform: rotate(45deg) scale(1.15); /* Rotates 45deg to create a diamond & blows it up */
+    background-color: var(--primary-yellow); /* Smoothly changes from yellow to crisp white on cursor over */
+}
+
+/* Counter-rotates the internal text during the shape morph so it stays perfectly straight */
+.process-card:hover .icon-box span,
+.process-card:hover .icon-box i {
+    transform: rotate(-45deg);
+    color: #000000;
+}
+
+.process-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.process-card p {
+    color: var(--text-gray);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* ==========================================================================
+   7. FITNESS PROGRAMS SECTION (Fixed)
+   ========================================================================== */
+.programs-section {
+    /* Changed image path from 'bg_3.jpg' to your custom texture filename if needed */
+    background: #0d0d0d url('assets/bg_3.jpg') repeat center center;
+    background-size: auto; 
+    padding-top: 90px; /* Added top padding so your header isn't choked */
+    padding-bottom: 90px;
+    position: relative;
+    z-index: 1; /* Establishes a clean root stacking layer */
+}
+
+/* Updated overlay behavior to drop BEHIND text layers, but stay ABOVE the texture image */
+.programs-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(13, 13, 13, 0.6); /* Slightly increased opacity for better text readability */
+    pointer-events: none;
+    z-index: -1; /* Drop behind section text elements */
+}
+
+/* No z-index fights needed here anymore, making them inherit text naturally */
+.section-header,
+.programs-layout {
+    position: relative;
+}
+
+.programs-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 8%;
+    gap: 50px;
+    align-items: center;
+}
+
+/* Ensure text elements stand out white against your dark texture image */
+.programs-left h2, 
+.program-info h3 {
+    color: #ffffff;
+}
+
+.programs-left h2 {
+    font-size: 42px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.programs-left p {
+    color: var(--text-gray);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.btn-outline {
+    display: inline-block;
+    border: 2px solid var(--primary-yellow);
+    color: var(--primary-yellow);
+    text-decoration: none;
+    padding: 15px 30px;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-yellow);
+    color: #000;
+}
+
+.programs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.program-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.program-icon {
+    width: 65px;
+    height: 65px;
+    background-color: var(--primary-yellow);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.program-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.program-info p {
+    color: var(--text-gray);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   8. STATS BANNER
+   ========================================================================== */
+/* ==========================================================================
+   8. STATS BANNER (Updated: Fixed Scrolling Wipe Background Effect)
+   ========================================================================== */
+.stats-banner {
+    position: relative; /* Structural clip container context */
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); /* Crops viewport spill */
+    padding: 80px 8%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    z-index: 1;
+}
+
+/* Pseudo element isolated to pull background layout properties fixed to screen */
+.stats-banner::before {
+    content: '';
+    position: fixed; /* Pins image straight to viewport layout */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1920') no-repeat center center/cover;
+    will-change: transform;
+    z-index: -1; /* Pushes background asset below content cards */
+}
+
+.stat-box h2 {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--primary-yellow);
+    margin-bottom: 10px;
+}
+
+.stat-box p {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-white);
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   9. COACHES SECTION
+   ========================================================================== */
+.coaches-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 0 8% 90px;
+}
+
+.coach-card {
+    display: flex;
+    background-color: #000000;
+}
+
+.coach-img {
+    flex: 1;
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+}
+
+.coach-details {
+    flex: 1;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.coach-title span {
+    color: var(--text-gray);
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.coach-title h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-yellow);
+}
+
+.coach-details p {
+    color: var(--text-gray);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 15px 0;
+}
+
+.coach-socials {
+    display: flex;
+    gap: 10px;
+}
+
+.coach-socials a {
+    width: 40px;
+    height: 40px;
+    background-color: #1a1a1a;
+    color: var(--text-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.coach-socials a:hover {
+    background-color: var(--primary-yellow);
+    color: #000;
+}
+/* ==========================================================================
+   10. TESTIMONIALS SECTION (Updated: Fixed Scrolling Wipe Background Effect)
+   ========================================================================== */
+.testimonials-section {
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    padding-bottom: 90px;
+    z-index: 1;
+}
+
+/* Pseudo element tracking layer for the fixed reveal styling */
+.testimonials-section::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1920') no-repeat center center/cover;
+    will-change: transform;
+    z-index: -1;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    padding: 0 4%;
+    align-items: flex-end;
+}
+
+.testimonial-box {
+    background-color: var(--primary-yellow);
+    color: #000000;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 320px;
+}
+
+.testimonials-grid .testimonial-box:nth-child(2),
+.testimonials-grid .testimonial-box:nth-child(4) {
+    min-height: 380px;
+    padding-top: 50px;
+}
+
+.testimonial-box p {
+    font-size: 14px;
+    line-height: 1.6;
+    font-weight: 500;
+    margin-bottom: 25px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ddd;
+    background-size: cover;
+    background-position: center;
+}
+
+.user-info h4 {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.user-info span {
+    font-size: 11px;
+    color: #444;
+    display: block;
+}
+
+/* ==========================================================================
+   11. OUR PACKAGES (Bodyfit Live Accurate - Smart Hover Engine)
+   ========================================================================== */
+.packages-section {
+    background-color: #0a0a0a;
+    padding-bottom: 90px;
+}
+
+.packages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 0 8%;
+}
+
+.package-card {
+    background-color: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 3px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.package-img {
+    height: 240px;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease;
+}
+
+/* ==========================================================================
+   SMART HOVER LOGIC ENGINE
+   ========================================================================== */
+
+/* 1. DEFAULT ACTIVE STATE: Shows your Standard package highlighted by default */
+.package-card.active {
+    transform: translateY(-10px);
+    border-color: rgba(255,255,255,0.05);
+    border-bottom-color: var(--primary-yellow);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Forces the active card's image to have the default scale pop */
+.package-card.active .package-img {
+    transform: scale(1.05);
+}
+
+/* Forces the active card's button to be yellow on page load */
+.package-card.active .btn-enroll {
+    background-color: var(--primary-yellow);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(226, 192, 53, 0.3);
+}
+
+
+/* 2. OVERRIDE: The moment the mouse enters the container, turn OFF the active card */
+.packages-grid:hover .package-card.active {
+    transform: translateY(0);
+    border-bottom-color: transparent;
+    box-shadow: none;
+}
+
+.packages-grid:hover .package-card.active .package-img {
+    transform: scale(1.0);
+}
+
+.packages-grid:hover .package-card.active .btn-enroll {
+    background-color: #222;
+    color: var(--text-white);
+    box-shadow: none;
+}
+
+
+/* 3. INDIVIDUAL HOVER STATE: Highlight whichever card the cursor is touching */
+.package-card:hover {
+    transform: translateY(-10px) !important;
+    border-color: rgba(255,255,255,0.05) !important;
+    border-bottom-color: var(--primary-yellow) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+.package-card:hover .package-img {
+    transform: scale(1.05) !important;
+}
+
+.package-card:hover .btn-enroll {
+    background-color: var(--primary-yellow) !important;
+    color: #000 !important;
+    box-shadow: 0 4px 12px rgba(226, 192, 53, 0.3) !important;
+}
+
+
+/* ==========================================================================
+   CARD INTERNAL CONTENT LAYOUTS (Kept 100% Unchanged)
+   ========================================================================== */
+.package-meta {
+    padding: 30px 25px 15px;
+}
+
+.package-meta h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.package-meta .duration {
+    color: var(--text-gray);
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.package-meta p {
+    color: var(--text-gray);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.package-purchase {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px 30px;
+}
+
+.package-price {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.package-price span {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary-yellow);
+}
+
+.btn-enroll {
+    background-color: #222;
+    color: var(--text-white);
+    text-decoration: none;
+    padding: 12px 25px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   12. BLOG SECTION
+   ========================================================================== */
+.blog-section {
+    background-color: #0e0e0e;
+    padding-bottom: 90px;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 0 8%;
+}
+
+.blog-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.blog-meta {
+    padding: 20px 0;
+    font-size: 12px;
+    color: var(--text-gray);
+    display: flex;
+    gap: 15px;
+}
+
+.blog-meta span i {
+    color: var(--primary-yellow);
+    margin-right: 5px;
+}
+
+.blog-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.blog-card p {
+    color: var(--text-gray);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   13. GALLERY & COMPACT APPOINTMENT FORM OVERHAUL (FORCED VISIBILITY REBOOT)
+   ========================================================================== */
+.gallery-strip {
+    display: flex !important;          /* Swapped to flex to force inline block rendering */
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    height: 360px !important;         /* Fixed depth height */
+    min-height: 330px !important;     /* Prevents other sections from compressing it to 0 */
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    clear: both !important;           /* Breaks free from any accidental floats above it */
+}
+
+@media (max-width: 480px) {
+
+    .gallery-strip {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+}
+
+.gallery-item {
+    flex: 1 !important;               /* Forces the 4 items to split the 100% width equally */
+    height: 360px !important;         /* Explicit internal height engine */
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-color: #333333 !important; /* Visual test: if images are broken, you will see a grey box */
+    box-sizing: border-box !important;
+}
+
+.split-booking-section {
+    display: flex;
+    min-height: 450px; 
+    align-items: center;
+    background-color: #000000;
+}
+
+.booking-left-widget {
+
+    width: 622px;
+    height: 478px;
+    background-color: #e5e5e5;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px; 
+    
+   
+  }
+
+.widget-error-icon {
+    font-size: 40px; 
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.booking-form-right {
+    flex: 1;
+    background-color: #000000;
+    padding: 3% 6%; 
+}
+
+/* Centered compact form profile container */
+.booking-form-right form {
+    max-width: 460px !important;
+    margin-left: 0;
+    background: #111111;
+    padding: 22px 35px; 
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.booking-form-right h2 {
+    font-size: 22px; 
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 15px; 
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-gray);
+    margin-bottom: 5px;
+}
+
+.form-group input, 
+.form-group textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #fff;
+    padding: 6px 0; 
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    border-bottom-color: var(--primary-yellow);
+}
+
+.form-group textarea {
+    height: 50px !important; 
+    resize: none;
+}
+
+.btn-appointment {
+    background-color: var(--primary-yellow);
+    color: #000;
+    border: none;
+    padding: 12px 35px;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: auto;
+    align-self: flex-start;
+}
+
+.btn-appointment:hover {
+    background-color: #cbb02e;
+    box-shadow: 0 4px 12px rgba(226, 192, 53, 0.25);
+}
+
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE CONTROL
+   ========================================================================== */
+@media (max-width: 992px) {
+    .gallery-strip {
+        flex-wrap: wrap !important; /* Allow wrapping on tablets */
+        height: auto !important;
+        min-height: auto !important;
+    }
+    .gallery-item {
+        flex: 1 0 50% !important; /* 2 columns on tablet screens */
+        height: 200px !important;
+    }
+    .split-booking-section {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .booking-left-widget {
+        padding: 40px 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .booking-form-right {
+        padding: 30px 20px;
+        width: 100%;
+        box-sizing: border-box;
+
+    }
+    .booking-form-right form {
+        max-width: 100% !important; 
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-item {
+        flex: 1 0 100% !important; /* 1 full column stack layout on mobile devices */
+        height: 220px !important;
+    }
+    .form-grid { 
+        grid-template-columns: 1fr; 
+    }
+    .form-group.full-width { 
+        grid-column: span 1; 
+    }
+}
+
+/* ==========================================================================
+   14. DETAILED FOOTER
+   ========================================================================== */
+footer {
+    background-color: #080808;
+    padding: 80px 8% 30px;
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.footer-column h3 {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.footer-column p {
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 12px;
+}
+
+.footer-socials a {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #141414;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-socials a:hover {
+    background-color: var(--primary-yellow);
+    color: #000;
+}
+
+.footer-blog-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.footer-blog-thumb {
+    width: 70px;
+    height: 70px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.footer-blog-info h4 {
+    font-size: 13px;
+    color: #fff;
+    line-height: 1.4;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.footer-blog-info span {
+    font-size: 11px;
+    color: var(--text-gray);
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links li a {
+    color: var(--text-gray);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-links li a:hover {
+    color: var(--primary-yellow);
+    padding-left: 5px;
+}
+
+.footer-contact-list {
+    list-style: none;
+}
+
+.footer-contact-list li {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.footer-contact-list li i {
+    color: var(--primary-yellow);
+    margin-top: 4px;
+}
+
+.copyright-bar {
+    text-align: center;
+    border-top: 1px solid #111;
+    padding-top: 30px;
+    font-size: 13px;
+}
+
+.copyright-bar i {
+    color: #ff4d4d;
+}
+
+.info-box p,
+.footer-contact-list li,
+.mobile-info-item p {
+    word-break: break-word;
+}
+
+/* ==========================================================================
+   15. CLEAN RESPONSIVE FIXES
+   ========================================================================== */
+@media (max-width: 1200px) {
+    .testimonials-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .testimonials-grid .testimonial-box:nth-child(n) { min-height: 300px; padding-top: 30px; }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 950px) {
+    .packages-grid, .blog-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+    .split-booking-section { flex-direction: column; }
+    .booking-left-widget { width: 100%; }
+    .booking-form-right { width: 100%; padding: 40px 8%; display: flex; justify-content: center; }
+    .booking-form-right form { max-width: 100% !important; width: 100%; }
+    .gallery-strip { grid-template-columns: repeat(2, 1fr); height: 350px; }
+}
+
+@media (max-width: 768px) {
+    header { padding: 20px 5%; }
+    nav { display: none; }
+    .hero-content h1 {
+        font-size: 36px;
+        line-height: 1.1;
+    }
+    .info-strip { position: relative; width: 100%; grid-template-columns: 1fr; left: 0; right: 0; }
+    .process-container { grid-template-columns: repeat(2, 1fr); }
+    .programs-layout { grid-template-columns: 1fr; }
+    .stats-banner { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .coaches-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full-width { grid-column: span 1; }
+    .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .process-container { grid-template-columns: 1fr; }
+    .stats-banner { grid-template-columns: 1fr; }
+    .coach-card { flex-direction: column; }
+    .coach-img { height: 280px; }
+}
+
+/* Reusable Fixed Background Class */
+.fixed-bg .section-background img {
+  object-fit: cover !important;
+  transform: none !important;
+  opacity: 1 !important;
+  attachment: fixed !important; /* Fallback */
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ==========================================================================
+   VIDEO LIGHTBOX MODAL STYLES
+   ========================================================================== */
+.video-lightbox {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000; /* Ensures it sits above your fixed header */
+    justify-content: center;
+    align-items: center;
+}
+
+.video-lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    position: relative;
+    width: 80%;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+}
+
+.lightbox-content iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.lightbox-close:hover {
+    color: var(--primary-yellow);
+}
+
+/* ==========================================================================
+   FIXED BACKGROUND PARALLAX UTILITY
+   ========================================================================== */
+.fixed-bg-section {
+    position: relative;
+    background-image: url('assets/bg_3.jpg') !important;
+    background-attachment: fixed !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   BLOG INTERACTIVE LINK & GLOW STYLES
+   ========================================================================== */
+.blog-card h3 {
+    margin: 15px 0 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.blog-card h3 a {
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Trigger glow behavior when hovering directly over the text link 
+   OR when hovering anywhere over the parent blog card container
+*/
+.blog-card:hover h3 a,
+.blog-card h3 a:hover {
+    color: #bfff00;
+    text-shadow: 0 0 4px rgba(191, 255, 0, 0.4), 
+                 0 0 10px rgba(191, 255, 0, 0.6);
+}
+
+/* ==========================================================================
+   13. SLIDABLE GALLERY VIEWER LAYOUT
+   ========================================================================== */
+.gallery-slider-wrapper {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.gallery-viewport {
+    width: 100%;
+    overflow: hidden; /* Acts as a structural mask hiding the extra images */
+}
+
+.gallery-strip {
+    display: flex !important;
+    width: 100%;
+    height: 380px !important; /* Kept your requested taller size */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Ultra smooth slide slide easing animation */
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.gallery-item {
+    /* On desktop, displays 4 images side-by-side at a time.
+       Each image takes up exactly 25% width of the visible screen.
+    */
+    flex: 0 0 25% !important; 
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* --- Premium Navigation Arrows --- */
+.gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+/* Glow accent effect match on hover */
+.gallery-arrow:hover {
+    background-color: var(--primary-yellow, #fff);
+    color: #000000;
+    border-color: var(--primary-yellow, #fff);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.prev-arrow { left: 20px; }
+.next-arrow { right: 20px; }
+
+
+/* ==========================================================================
+   RESPONSIVE COMPONENT CONTROLS
+   ========================================================================== */
+@media (max-width: 992px) {
+    .gallery-strip { height: 280px !important; }
+    .gallery-item {
+        flex: 0 0 50% !important; /* Displays 2 images side-by-side on tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-strip { height: 240px !important; }
+    .gallery-item {
+        flex: 0 0 100% !important; /* Displays 1 full image at a time on mobile phones */
+    }
+    .gallery-arrow {
+        width: 40px;
+        height: 40px;
+    }
+    .prev-arrow { left: 10px; }
+    .next-arrow { right: 10px; }
+}
+
+/* ==========================================================================
+   MOBILE HAMBURGER & INTERACTIVE NAV OVERLAYS
+   ========================================================================== */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: var(--text-white);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 1100;
+}
+
+.hamburger:hover {
+    color: var(--primary-yellow);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block; /* Show hamburger button on mobile platforms */
+    }
+
+    nav {
+        display: block !important; /* Override the previous fallback display rule */
+        position: fixed;
+        top: 0;
+        right: -100%; /* Push menu off-screen by default */
+        width: 75%;
+        max-width: 300px;
+        height: 100vh;
+        background-color: rgba(11, 11, 11, 0.98);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+        padding: 100px 4% 40px;
+        transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        z-index: 1090;
+    }
+
+    /* Target state when menu is expanded */
+    nav.mobile-active {
+        right: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }
+
+    nav ul li {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    nav ul li a {
+        font-size: 16px;
+        display: block;
+        padding: 10px 0;
+    }
+
+    /* Disable heavy parallax on mobile to prevent scrolling stutter */
+    .fixed-bg-section, .stats-banner::before, .testimonials-section::before {
+        background-attachment: scroll !important;
+    }
+}
+
+/* Hide the mobile nav details on desktop layouts by default */
+.mobile-nav-info {
+    display: none;
+}
+
+/* Responsive configurations for screens 768px and smaller */
+@media (max-width: 768px) {
+    
+    /* 1. COMPLETELY HIDE THE HOME PAGE STRIP ON MOBILE VIEWS */
+    .info-strip {
+        display: none !important;
+    }
+
+    /* 2. ENHANCE MOBILE SLIDEOUT DRAWER FOR SCROLLING EXTRA ELEMENTS */
+    nav {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between; /* Pushes the contact details to the bottom */
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 320px;
+        height: 100vh;
+        background-color: rgba(11, 11, 11, 0.98);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.6);
+        padding: 90px 30px 30px 30px;
+        transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        z-index: 1090;
+        overflow-y: auto; /* Ensures smaller phones can scroll the menu contents safely */
+    }
+
+    nav.mobile-active {
+        right: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        width: 100%;
+    }
+
+    /* 3. SHOW AND DESIGN THE EMBEDDED HAMBURGER CONTACT BLOCK */
+    .mobile-nav-info {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separator line under links */
+        width: 100%;
+    }
+
+    .mobile-info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .mobile-info-item i {
+        color: var(--primary-yellow, #e2c035);
+        font-size: 18px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .mobile-info-item h4 {
+        font-size: 13px;
+        text-transform: uppercase;
+        color: var(--text-white, #ffffff);
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+
+    .mobile-info-item p {
+        font-size: 12px;
+        color: var(--text-gray, #a5a5a5);
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .hero-content h1 {
+        font-size: 30px;
+        line-height: 1.1;
+    }
+
+    .welcome {
+        flex-direction: column;
+    }
+
+    .welcome-video {
+        min-height: 300px;
+    }
+
+    .welcome-text {
+        padding: 50px 25px;
+    }
+
+    .package-card,
+    .blog-card,
+    .testimonial-box {
+        width: 100%;
+    }
+
+    .booking-form-right{
+      display: none;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .programs-section,
+    .coaches-section,
+    .packages-section,
+    .blog-section {
+        background-attachment: scroll;
+    }
+
+}
+
+/* ==========================================================================
+   GALLERY COMPONENT STRUCTURE & ANIMATION FIXES
+   ========================================================================== */
+.gallery-viewport {
+    width: 100% !important;
+    overflow: hidden !important; /* Clips items sliding out of view */
+    position: relative;
+}
+
+.gallery-strip {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    height: 360px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Smooth sliding transition effect for desktop arrow clicks */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important; 
+}
+
+.gallery-item {
+    flex: 0 0 25% !important; /* Exactly 4 images visible at a time on desktop */
+    height: 360px !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE SLIDER CONTROLS
+   ========================================================================== */
+@media (max-width: 992px) {
+    .gallery-item {
+        flex: 0 0 50% !important; /* 2 items visible side-by-side on tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-viewport {
+        overflow-x: auto !important; /* Allows beautiful horizontal thumb-swiping */
+        scroll-snap-type: x mandatory !important; /* Snaps images neatly into center frame */
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .gallery-strip {
+        transition: none !important; /* Disables JS transform events on mobile so they don't break touch swipes */
+    }
+
+    .gallery-item {
+        flex: 0 0 100% !important; /* Shows exactly 1 standalone image at a time */
+        scroll-snap-align: start !important;
+    }
+
+    /* Hide the text navigation arrows on mobile screen sizes */
+    .gallery-arrow {
+        display: none !important;
+    }
+}       
+
+/* ==========================================================================
+   SIMPLE MOBILE POPUP MODAL STYLES WITH IMAGE BACKGROUND
+   ========================================================================== */
+.mobile-modal {
+    display: none; 
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+/* Modal Content Container Box */
+.mobile-modal-content {
+    background-color: #141414;
+    margin: 25% auto;
+    padding: 25px 20px;
+    border: 1px solid #252525;
+    width: 88%;
+    max-width: 380px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Keeps the background image inside the rounded corners */
+}
+
+/* Background Image Layer with Dark Tint Overlay */
+.modal-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* REPLACE 'your-image-path.jpg' WITH YOUR ACTUAL IMAGE FILE */
+    background: linear-gradient(rgba(20, 20, 20, 0.85), rgba(20, 20, 20, 0.85)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjZniGiYARNXh-n8_a4ycejXtLTi1uD71WOTt8ouABFA&s=10');
+    background-size: cover;
+    background-position: center;
+    z-index: 0; /* Pushes image to the back */
+}
+
+/* Force all form elements to sit in front of the background image */
+.mobile-modal-content h2,
+.mobile-modal-content .close-modal-btn,
+.mobile-modal-content form {
+    position: relative;
+    z-index: 1;
+}
+
+.mobile-modal-content h2 {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+/* Close Button (X) */
+.close-modal-btn {
+    color: #a5a5a5;
+    position: absolute;
+    top: -10px;
+    right: -270px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+    color: #e2c035;
+}
+
+/* Form Item Layout */
+.modal-form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.modal-form-group label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #e2c035;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.modal-form-group input,
+.modal-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(30, 30, 30, 0.85); /* Semitransparent background for inputs */
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-form-group input:focus,
+.modal-form-group textarea:focus {
+    border-color: #e2c035;
+}
+
+.modal-form-group textarea {
+    height: 90px;
+    resize: none;
+}
+
+/* Form Submit Action Button */
+.btn-modal-submit {
+    width: 100%;
+    background-color: #e2c035;
+    color: #0b0b0b;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-modal-submit:hover {
+    background-color: #d1b024;
+}
+
+/* Media Utility to activate layout only on mobile screens */
+@media (max-width: 768px) {
+    .mobile-modal.active-popup {
+        display: block !important;
+    }
+}
+
+/* ==========================================================================
+   CUSTOM SUCCESS POPUP MODAL STYLES
+   ========================================================================== */
+.success-modal {
+    display: none;
+    position: fixed;
+    z-index: 100000; /* Higher than everything else */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show class used by JS */
+.success-modal.show-success {
+    display: flex !important;
+}
+
+.success-modal-content {
+    background-color: #141414;
+    border: 1px solid #252525;
+    padding: 35px 25px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    animation: popupScaleUp 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes popupScaleUp {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.success-icon {
+    font-size: 50px;
+    color: #e2c035; /* Primary gym yellow */
+    margin-bottom: 15px;
+}
+
+.success-modal-content h2 {
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.success-modal-content p {
+    font-size: 14px;
+    color: #a5a5a5;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.btn-success-close {
+    width: 100%;
+    background-color: #e2c035;
+    color: #0b0b0b;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-success-close:hover {
+    background-color: #d1b024;
+}
+
+/* Custom Vector Graphic Style for Program Cards */
+.program-icon-graphic {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Prevents the image container from squeezing on smaller viewports */
+    margin-bottom: 15px; /* Matches the spacing of your other card text blocks */
+}
+
+.program-icon-graphic img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Keeps the vector aspect ratio perfectly sharp */
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.3)); /* Adds depth against the dark background */
+}
+
+/* Generates the missing circular backdrop behind the Pilates graphic */
+.pilates-accent-frame {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-yellow); /* Matches your gym's primary brand yellow */
+    border-radius: 50%; /* Forms a perfect uniform circle shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px; /* Pads the edges so the silhouette doesn't hit the border lines */
+    box-shadow: 0px 4px 15px rgba(226, 192, 53, 0.4); /* Gives it a matching glowing vibe */
+}
+
+/* Adjusts the vector graphic inside the newly added circle */
+.pilates-accent-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Turns the inner black lines into a dark silhouette that pops off the yellow circle */
+    filter: brightness(0) invert(0.05); 
+}
+
+/* ==========================================================================
+   RESPONSIVE MAP WIDGET BACKGROUNDS
+   ========================================================================== */
+
+/* 1. Mobile & Small Screen Styling (Default First) */
+.responsive-map-widget {
+    background-image: url('assets/map5.png'); /* Put your mobile image here */
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s ease-in-out; /* Smooth transition feel */
+}
+
+/* 2. Desktop Screens Styling (Triggers on viewports wider than 768px) */
+@media (min-width: 769px) {
+    .responsive-map-widget {
+        background-image: url('assets/map3.png'); /* Your original desktop image */
+    }
+}
+
+/* ==========================================================================
+   PREMIUM GRAPHIC LOGO SYSTEM
+   ========================================================================== */
+.logo-container {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    gap: 18px;
+    padding: 2px 0;
+    margin-left: -30px;
+    text-decoration: none;
+}
+
+.gym-logo-img {
+    height: 75px; /* Constrains it perfectly to your nav bar height */
+    width: auto;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    margin-top: -5px;
+    
+    /* Elegant CSS Filter Matrix: Converts the red image to match your theme's gold/yellow */
+    filter: hue-rotate(15deg) brightness(1.1) contrast(1.1) drop-shadow(0px 2px 8px rgba(226, 192, 53, 0.3));
+}
+
+/* Subtle hover pop effect */
+.logo-container:hover .gym-logo-img {
+    transform: scale(1.05);
+    filter: hue-rotate(15deg) brightness(1.2) contrast(1.1) drop-shadow(0px 0px 12px rgba(226, 192, 53, 0.6));
+}
+
+.logo-text-side {
+    color: #e2c035; /* Your premium brand yellow */
+    font-family: 'Poppins', 'Montserrat', sans-serif; /* Fallback matching your main nav layout */
+    font-size: 1.4rem;
+    font-weight: 800; /* Bold, high-impact weight */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-style: italic; /* Matches the forward-slanted tilt of the AK graphic */
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-top: -75px;
+    margin-right: -160px;
+}
+
+/* Responsive fix: Slightly scales down on mobile viewports so nav links don't wrap */
+@media (max-width: 768px) {
+    .gym-logo-img {
+        height: 75px;
+        margin-left: 20px;
+        margin-top: -15px;
+    }
+    .logo-text-side {
+        font-size: 1.1rem;
+        gap: 8px;
+        margin-right: -148px;
+        margin-top: -74px;
+    }
+}
+
+/* ==========================================================================
+   PACKAGES SLIDER CONTAINER & TRACK MECHANICS
+   ========================================================================== */
+.packages-slider-container {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+    padding: 0 5%; /* Leaves comfortable space on the sides for arrow buttons */
+    box-sizing: border-box;
+}
+
+/* Converts the previous grid into a clean, infinite horizontal row */
+.packages-slider-track {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 10px 40px 10px; /* Clearance so card hover shadows aren't cut off */
+    scrollbar-width: none; /* Hides native scrollbar on Firefox */
+}
+
+.packages-slider-track::-webkit-scrollbar {
+    display: none; /* Hides native scrollbar on Chrome, Safari, and Edge */
+}
+
+/* Forces the cards to cleanly adopt a 3-column structural layout sizing layout context */
+.packages-slider-track .package-card {
+    flex: 0 0 calc(33.333% - 20px);
+    min-width: 300px;
+}
+
+/* ==========================================================================
+   SLIDER ARROW BUTTONS (PERFECTLY CENTERED FIX)
+   ========================================================================== */
+.pkg-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(226, 192, 53, 0.1);
+    border: 1px solid #e2c035;
+    color: #e2c035;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    
+    /* Modern flexbox centering to fix text symbol shifting */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4px; /* Perfectly centers baseline character alignment */
+}
+
+.pkg-nav-btn:hover {
+    background: #e2c035;
+    color: #000;
+    box-shadow: 0 0 15px rgba(226, 192, 53, 0.4);
+}
+
+.pkg-nav-btn.prev { left: 1%; }
+.pkg-nav-btn.next { right: 1%; }
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .packages-slider-track .package-card {
+        flex: 0 0 calc(50% - 15px); /* Renders 2 balanced plans visible on tablet screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .packages-slider-container {
+        padding: 0 10px;
+    }
+    .packages-slider-track {
+        padding-bottom: 20px;
+    }
+    .packages-slider-track .package-card {
+        flex: 0 0 100%; /* Shows exactly 1 full card width layout context on mobile devices */
+    }
+    .pkg-nav-btn {
+        display: none; /* Hides buttons on mobile layouts to encourage natural touch swiping */
+    }
+}
+
+/* ==========================================================================
+   SMART HOVER ENGINE CONNECTOR
+   ========================================================================== */
+/* Routes your original hover reset rules to map onto the new track container */
+.packages-slider-track:hover .package-card.active {
+    transform: translateY(0);
+    border-bottom-color: transparent;
+    box-shadow: none;
+}
+.packages-slider-track:hover .package-card.active .package-img {
+    transform: scale(1.0);
+}
+.packages-slider-track:hover .package-card.active .btn-enroll {
+    background-color: #222;
+    color: var(--text-white);
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   SMALL DEVICES / MOBILE VIEWPORT LOGIC FOR PACKAGES SLIDER
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Shrink side container padding so cards fill more mobile screen width */
+    .packages-slider-container {
+        padding: 0 15px;
+    }
+
+    /* 2. Decrease the gap spacing slightly to keep layout compact on small screens */
+    .packages-slider-track {
+        gap: 15px;
+        padding-bottom: 20px; /* Clean tracking depth for mobile scroll snap */
+    }
+
+    /* 3. Force EXACTLY 1 card to fit the viewport width perfectly at a time */
+    .packages-slider-track .package-card {
+        flex: 0 0 100%; 
+        min-width: 100%;
+    }
+
+    /* 4. Hide the desktop arrow buttons so they don't block text or clutter the screen */
+    .pkg-nav-btn {
+        display: none !important; 
+    }
+}
+
+.stat-box h2::after {
+    content: "+";
+}
+
+.stat-box h2.no-plus::after {
+    content: "";
+}
